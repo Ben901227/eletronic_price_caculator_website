@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset = "utf-8" />
+		<title>電價計算網頁</title>
+		<link rel = "shortcut icon" href = "favicon.png" type = "image/jpg">
+		<link rel = "stylesheet" href = "style.css" >
+	</head>
+	<body>
+		<script>
+			function isLeapYear(){
+				var today = new Date();
+				var year = today.getFullYear();
+				if(year % 4 != 0)
+					return false;
+				else if(year % 4 == 0 && year % 100 != 0)
+					return true;
+				else if (year % 100 == 0 && year % 400 != 0 )
+					return false;
+				else if (year % 400 == 0 )
+					return true;
+			}
+			function caculate(){
+				var category = document.querySelector('input[name="category"]:checked');
+				var degree = document.getElementById("degree");
+				var month = document.getElementById("month");
+				var total_price = 0;
+				var average_price = 0;
+				var days = [-1,31,28,31,30,31,30,31,31,30,31,30,31];
+				if(isLeapYear())
+					days[2] = 29;
+				if (category == null)
+					alert("請選擇用電種類");
+				if(month.value >= 6 && month.value <= 9){
+					total_price = caculatePrice(1,category.value,degree.value,month.value);
+					average_price = total_price/days[month.value];
+					showcontent(total_price,average_price,month.value,days[month.value]);
+				}
+				else{
+					total_price = caculatePrice(0,category.value,degree.value,month.value);
+					average_price = total_price/days[month.value];
+					showcontent(total_price,average_price,month.value,days[month.value]);
+				}
+			}
+			function caculatePrice(season,category,degree,month){
+				var price;
+				if(season == 1){
+					var nonbusiness_unit_price = [1.63, 2.38, 3.52, 4.8, 5.66, 6.41];
+					var business_unit_price = [2.53, 3.55, 4.25, 6.43];
+				}
+				else{
+					var nonbusiness_unit_price = [1.63, 2.1, 2.89, 3.94, 4.6, 5.03];
+					var business_unit_price = [2.12, 2.91, 3.44, 5.05];
+				}
+				if(category == 0){
+					if(degree > 0 && degree <= 120)
+						price = nonbusiness_unit_price[0] * degree;
+					else if(degree > 120 && degree <= 330)
+						price = nonbusiness_unit_price[1] * degree;
+					else if(degree > 330 && degree <= 500)
+						price = nonbusiness_unit_price[2] * degree;
+					else if(degree > 500 && degree <= 700)
+						price = nonbusiness_unit_price[3] * degree;
+					else if(degree > 700 && degree <= 1000)
+						price = nonbusiness_unit_price[4] * degree;
+					else
+						price = nonbusiness_unit_price[5] * degree;
+				}
+				else{
+					if(degree > 0 && degree <= 330)
+						price = business_unit_price[0] * degree;
+					else if(degree > 330 && degree <= 700)
+						price = business_unit_price[1] * degree;
+					else if(degree > 700 && degree <= 1500)
+						price = business_unit_price[2] * degree;
+					else
+						price = business_unit_price[3] * degree;
+					
+				}
+				return price;
+			}
+			function showcontent(total_price,average_price,month,days){
+					var msg = "<span>$" + total_price.toFixed(0) + "元</span>" + "<a>每天約花$" + average_price.toFixed(2) + "元(" + month + "月有" + days + "天)</a>";
+					document.getElementById("Show").innerHTML = msg;
+					
+			}
+		</script>
+
+		<div>
+			用電種類：<input type = "radio" id = "category" name = "category" value = "1"  /> 營業用
+					<input type = "radio" id = "category" name = "category" value = "0" /> 非營業用 <br />
+			計算單位：<input id ="degree" name="degree" type="number" size="5" value="1000" min="0"> 度<br />
+			計價月份：<select id = "month" name="month" class="select"><option value="null">請選擇</option><option value="1">1</option><option value="2">2</option><option value="3">3</option><option value="4">4</option><option value="5">5</option><option value="6" selected="">6</option><option value="7">7</option><option value="8">8</option><option value="9">9</option><option value="10">10</option><option value="11">11</option><option value="12">12</option></select> <br />
+			總耗電花費：<p id="Show"></p>
+			<button  id = "Show" onclick = "caculate()">開始計算</button>
+		</div>
+	</body>
+</html>

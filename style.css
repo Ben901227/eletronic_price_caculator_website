@@ -1,0 +1,36 @@
+
+body{
+
+	
+	background-repeat: no-repeat;
+	background-position: relative;
+	background-size: cover;　
+	
+}
+
+
+div{
+	overflow-x: auto;
+	overflow-y: auto;
+}
+
+a{
+	color:gray;
+	font-size: 15px;
+	opacity: 70%;
+}
+span{
+	animation:blink 1s infinite;
+	color:red;
+	font-size: 50px;
+	font-family: "Brush Script MT", cursive;
+}
+
+@keyframes blink{
+	0%{opacity:0}
+	50%{opacity:1}
+	100%{opacity:0}
+
+}
+
+
